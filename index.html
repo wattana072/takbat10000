@@ -207,6 +207,29 @@
     .bank small { display: block; color: var(--c-muted); font-size: 12px; }
     .copy { margin-left: auto; border: 1.5px solid var(--c-primary); background: #fff; color: var(--c-primary-dark); padding: 6px 12px; border-radius: 999px; font-weight: 600; font-size: 13px; }
 
+    /* ---------- upload slip ---------- */
+    .drop { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; text-align: center;
+      padding: 22px 16px; border-radius: var(--radius-md); border: 2.5px dashed var(--c-sky); background: linear-gradient(135deg, #F7FBFF, var(--c-mist));
+      cursor: pointer; transition: all .2s; }
+    .drop:hover, .drop.drag { border-color: var(--c-primary); background: var(--c-baby); transform: translateY(-2px); }
+    .drop .d-ico { font-size: 34px; animation: wiggle 2.6s ease-in-out infinite; }
+    .drop .d-main { font-family: var(--font-head); color: var(--c-primary-ink); font-size: 16px; }
+    .drop .d-sub { font-size: 12.5px; color: var(--c-muted); }
+    .drop input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+    .drop[hidden] { display: none; }
+    .field.has-err .drop { border-color: var(--c-danger); }
+
+    .preview { display: none; align-items: center; gap: 12px; padding: 10px; border-radius: var(--radius-md); background: #fff; border: 2px solid var(--c-primary);
+      box-shadow: 0 4px 0 0 var(--c-sky); animation: pop .3s ease; }
+    .preview.show { display: flex; }
+    .preview .thumb { flex: 0 0 72px; height: 72px; border-radius: 14px; overflow: hidden; background: var(--c-mist); display: grid; place-items: center; font-size: 30px; cursor: zoom-in; }
+    .preview .thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .preview .info { flex: 1; min-width: 0; }
+    .preview .fname { font-weight: 600; color: var(--c-primary-ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 14px; }
+    .preview .fsize { font-size: 12.5px; color: var(--c-muted); }
+    .preview .ok { font-size: 12px; color: #2E9E6A; font-weight: 600; }
+    .preview .rm { border: 0; background: #FFECEF; color: var(--c-danger); width: 40px; height: 40px; border-radius: 12px; font-size: 18px; }
+
     .stepper { display: flex; align-items: center; gap: 0; width: 170px; border: 2px solid var(--c-baby); border-radius: 999px; overflow: hidden; background: #fff; }
     .stepper button { width: 48px; height: 46px; border: 0; background: var(--c-mist); font-size: 22px; color: var(--c-primary-ink); font-weight: 700; }
     .stepper input { flex: 1; width: 100%; border: 0; text-align: center; font: inherit; font-size: 18px; font-weight: 600; outline: none; color: var(--c-primary-ink); }
@@ -403,6 +426,25 @@
                 <label class="lbl" for="transferAmount">จำนวน (บาท)</label>
                 <input class="input" id="transferAmount" name="transferAmount" type="text" inputmode="numeric" placeholder="เช่น 10,000" />
               </div>
+              <div class="field" data-field="slip">
+                <label class="lbl">แนบหลักฐานการโอน <span class="req" id="slipReq" hidden>*</span><span id="slipOpt" style="font-weight:400;color:var(--c-muted)">(ถ้ามี)</span></label>
+                <label class="drop" id="dropZone">
+                  <input type="file" id="slipInput" accept="image/*,application/pdf" />
+                  <span class="d-ico">🧾</span>
+                  <span class="d-main">แตะเพื่อแนบสลิป / ลากไฟล์มาวาง</span>
+                  <span class="d-sub" id="slipHint">รองรับ JPG, PNG, HEIC, PDF</span>
+                </label>
+                <div class="preview" id="slipPreview">
+                  <div class="thumb" id="slipThumb"></div>
+                  <div class="info">
+                    <div class="fname" id="slipName"></div>
+                    <div class="fsize" id="slipSize"></div>
+                    <div class="ok">✓ พร้อมส่ง</div>
+                  </div>
+                  <button type="button" class="rm" id="slipRemove" aria-label="ลบไฟล์">🗑</button>
+                </div>
+                <div class="err-msg" id="slipErr">กรุณาแนบหลักฐานการโอน</div>
+              </div>
             </div>
 
             <label class="opt">
@@ -458,7 +500,18 @@
     const CONFIG = {
       // 👉 วาง URL Web App ของ Google Apps Script (ลงท้าย /exec)
       API_URL: 'https://script.google.com/macros/s/AKfycbwjSKGbIA0icDnYSJX3-NhM-zBVfTuMWODppgWUcp5EOvKSKr0MBM9igPArKMYqrR_N/exec',
-      REQUEST_TIMEOUT_MS: 30000
+      REQUEST_TIMEOUT_MS: 60000
+    };
+
+    /* ==========================================================================
+       SET 1.1 : UPLOAD — การแนบหลักฐานการโอน (ให้ตรงกับ DRIVE_CONFIG ใน Code.gs)
+       ========================================================================== */
+    const UPLOAD = {
+      REQUIRED_ON_TRANSFER: false,   // true = เลือก "โอนปัจจัย" แล้วต้องแนบสลิป
+      MAX_MB      : 10,              // ขนาดไฟล์สูงสุด
+      MAX_DIM     : 1600,            // ย่อรูปด้านยาวสุดไม่เกินกี่ px (ลดขนาดก่อนส่ง)
+      JPEG_QUALITY: 0.85,
+      TYPES       : ['image/jpeg', 'image/png', 'image/webp', 'image/heic', 'image/heif', 'application/pdf']
     };
 
     /* ==========================================================================
@@ -646,7 +699,8 @@
         productDetail   : sup.includes('PRODUCT') && !f.productDetail.value.trim(),
         attend          : !att,
         delegateName    : att === 'DELEGATE' && !f.delegateName.value.trim(),
-        productDelivDate: del.includes('PRODUCT') && !f.productDelivDate.value
+        productDelivDate: del.includes('PRODUCT') && !f.productDelivDate.value,
+        slip            : UPLOAD.REQUIRED_ON_TRANSFER && del.includes('TRANSFER') && !slip
       };
       let first = null;
       Object.entries(rules).forEach(([k, bad]) => { setErr(k, bad); if (bad && !first) first = k; });
@@ -676,7 +730,9 @@
         transferAmount: f.transferAmount.value.replace(/[^\d.]/g, ''),
         productDelivDate: f.productDelivDate.value,
         note: f.note.value.trim(),
-        userAgent: navigator.userAgent
+        userAgent: navigator.userAgent,
+        slip: (checked('delivery').includes('TRANSFER') && slip)
+          ? { name: slip.name, mimeType: slip.mimeType, data: slip.data } : null
       };
     }
 
@@ -704,7 +760,9 @@
 
       const btn = $('#btnSubmit');
       const old = btn.innerHTML;
-      btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> กำลังส่งข้อมูล...';
+      const withSlip = checked('delivery').includes('TRANSFER') && !!slip;
+      btn.disabled = true;
+      btn.innerHTML = `<span class="spinner"></span> ${withSlip ? 'กำลังอัปโหลดหลักฐานและส่งข้อมูล...' : 'กำลังส่งข้อมูล...'}`;
 
       try {
         const res = await api({ action: 'submit', data: collect() });
@@ -725,6 +783,7 @@
         <div>💝 ${esc(s.supportList)}</div>
         ${s.supportAmount ? `<div>💰 ยอดกองบุญ ${fmt(s.supportAmount)} บาท</div>` : ''}
         <div>🙏 ${esc(s.attend)}</div>
+        ${s.hasSlip ? `<div>🧾 แนบหลักฐานการโอนเรียบร้อย</div>` : ''}
         <div style="margin-top:6px;color:var(--c-muted);font-size:12.5px">📸 แคปหน้าจอนี้เก็บไว้เป็นหลักฐานได้เลย</div>`;
       $('#successModal').classList.add('show');
       confetti();
@@ -746,10 +805,108 @@
 
     function resetForm() {
       form().reset();
+      clearSlip();
       $('#transferAmount').dataset.touched = '';
       $$('.has-err').forEach(el => el.classList.remove('has-err'));
       $$('.input.err').forEach(el => el.classList.remove('err'));
       syncConditional();
+    }
+
+    /* ==========================================================================
+       SLIP UPLOAD — แนบหลักฐานการโอน
+       ========================================================================== */
+    let slip = null;   // { name, mimeType, data(base64), size, previewUrl }
+
+    const fmtSize = b => b >= 1048576 ? (b / 1048576).toFixed(2) + ' MB' : Math.max(1, Math.round(b / 1024)) + ' KB';
+
+    function guessType(file) {
+      if (file.type) return file.type.toLowerCase();
+      const ext = (file.name.split('.').pop() || '').toLowerCase();
+      return { jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png', webp: 'image/webp', heic: 'image/heic', heif: 'image/heif', pdf: 'application/pdf' }[ext] || '';
+    }
+
+    const readAsDataURL = blob => new Promise((ok, fail) => {
+      const r = new FileReader(); r.onload = () => ok(r.result); r.onerror = fail; r.readAsDataURL(blob);
+    });
+
+    // ย่อรูปให้เล็กลงก่อนส่ง (ถ้าเบราว์เซอร์ถอดรหัสรูปไม่ได้ เช่น HEIC บางเครื่อง → ส่งไฟล์เดิม)
+    function compressImage(file) {
+      return new Promise(resolve => {
+        const url = URL.createObjectURL(file);
+        const img = new Image();
+        img.onload = () => {
+          const scale = Math.min(1, UPLOAD.MAX_DIM / Math.max(img.width, img.height));
+          const w = Math.round(img.width * scale), h = Math.round(img.height * scale);
+          const cv = document.createElement('canvas'); cv.width = w; cv.height = h;
+          const ctx = cv.getContext('2d'); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, w, h); ctx.drawImage(img, 0, 0, w, h);
+          URL.revokeObjectURL(url);
+          cv.toBlob(b => resolve(b && b.size < file.size ? b : file), 'image/jpeg', UPLOAD.JPEG_QUALITY);
+        };
+        img.onerror = () => { URL.revokeObjectURL(url); resolve(file); };
+        img.src = url;
+      });
+    }
+
+    async function handleSlipFile(file) {
+      if (!file) return;
+      const type = guessType(file);
+      if (!UPLOAD.TYPES.includes(type)) { toast('รองรับเฉพาะรูปภาพ (JPG/PNG/HEIC) หรือ PDF', true); return; }
+
+      const drop = $('#dropZone');
+      drop.querySelector('.d-main').textContent = '⏳ กำลังเตรียมไฟล์...';
+      try {
+        let blob = file, mime = type;
+        if (type.startsWith('image/')) {
+          blob = await compressImage(file);
+          if (blob !== file) mime = 'image/jpeg';
+        }
+        if (blob.size > UPLOAD.MAX_MB * 1048576) { toast(`ไฟล์ใหญ่เกิน ${UPLOAD.MAX_MB} MB`, true); return; }
+
+        const dataUrl = await readAsDataURL(blob);
+        if (slip && slip.previewUrl) URL.revokeObjectURL(slip.previewUrl);
+        slip = {
+          name: file.name, mimeType: mime, size: blob.size,
+          data: dataUrl.split(',')[1],
+          previewUrl: mime.startsWith('image/') ? URL.createObjectURL(blob) : ''
+        };
+        renderSlip();
+        setErr('slip', false);
+      } catch (e) {
+        toast('อ่านไฟล์ไม่สำเร็จ กรุณาลองใหม่', true);
+      } finally {
+        drop.querySelector('.d-main').textContent = 'แตะเพื่อแนบสลิป / ลากไฟล์มาวาง';
+        $('#slipInput').value = '';
+      }
+    }
+
+    function renderSlip() {
+      const has = !!slip;
+      $('#dropZone').hidden = has;
+      $('#slipPreview').classList.toggle('show', has);
+      if (!has) return;
+      $('#slipThumb').innerHTML = slip.previewUrl ? `<img src="${slip.previewUrl}" alt="สลิป" />` : '📄';
+      $('#slipName').textContent = slip.name;
+      $('#slipSize').textContent = fmtSize(slip.size) + (slip.mimeType === 'application/pdf' ? ' • PDF' : '');
+    }
+
+    function clearSlip() {
+      if (slip && slip.previewUrl) URL.revokeObjectURL(slip.previewUrl);
+      slip = null; $('#slipInput').value = ''; renderSlip();
+    }
+
+    function initSlip() {
+      const input = $('#slipInput'), drop = $('#dropZone');
+      $('#slipReq').hidden = !UPLOAD.REQUIRED_ON_TRANSFER;
+      $('#slipOpt').hidden = UPLOAD.REQUIRED_ON_TRANSFER;
+      $('#slipHint').textContent = `รองรับ JPG, PNG, HEIC, PDF • ไม่เกิน ${UPLOAD.MAX_MB} MB`;
+
+      input.addEventListener('change', e => { e.stopPropagation(); handleSlipFile(input.files[0]); });
+      ['dragenter', 'dragover'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('drag'); }));
+      ['dragleave', 'drop'].forEach(ev => drop.addEventListener(ev, () => drop.classList.remove('drag')));
+      drop.addEventListener('drop', e => { e.preventDefault(); handleSlipFile(e.dataTransfer.files[0]); });
+
+      $('#slipRemove').addEventListener('click', clearSlip);
+      $('#slipThumb').addEventListener('click', () => slip && slip.previewUrl && openLightbox({ src: slip.previewUrl, alt: 'หลักฐานการโอน' }));
     }
 
     /* ==========================================================================
@@ -803,6 +960,7 @@
       });
 
       if (location.hash === '#form') show('viewForm');
+      initSlip();
       syncConditional();
     });
   </script>
