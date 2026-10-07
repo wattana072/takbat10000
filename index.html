@@ -6,9 +6,20 @@
   <title>ร่วมงานตักบาตรพระหมื่นรูป กาญจนบุรี</title>
   <meta name="description" content="แบบฟอร์มแสดงความจำนงร่วมมหากุศล โครงการตักบาตรพระ 10,000 รูป ฉลองครบ 195 ปี จังหวัดกาญจนบุรี" />
   <meta name="theme-color" content="#A7C7E7" />
+
+  <!-- ไอคอนแสดงบนแถบเบราว์เซอร์ (Favicon) แทนรูปลูกโลก -->
+  <link rel="icon" type="image/png" href="https://i.ibb.co/jZJvt8Kt/image.png" />
+  <link rel="shortcut icon" type="image/png" href="https://i.ibb.co/jZJvt8Kt/image.png" />
+  <link rel="apple-touch-icon" href="https://i.ibb.co/jZJvt8Kt/image.png" />
+
   <meta property="og:title" content="ร่วมงานตักบาตรพระหมื่นรูป กาญจนบุรี" />
   <meta property="og:description" content="19 ธ.ค. 2569 • 06.00-08.30 น. • Sky Walk กาญจนบุรี" />
-  <meta property="og:image" content="https://i.ibb.co/YFGdmS9H/image.jpg" />
+  <meta property="og:image" content="https://i.ibb.co/jZJvt8Kt/image.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="ร่วมงานตักบาตรพระหมื่นรูป กาญจนบุรี" />
+  <meta name="twitter:description" content="19 ธ.ค. 2569 • 06.00-08.30 น. • Sky Walk กาญจนบุรี" />
+  <meta name="twitter:image" content="https://i.ibb.co/jZJvt8Kt/image.png" />
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Mitr:wght@400;500;600&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -69,7 +80,8 @@
       background: rgba(238, 245, 252, .72); border-bottom: 1px solid rgba(167, 199, 231, .5);
     }
     .topbar .logo { width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center;
-      background: linear-gradient(135deg, var(--c-sky), var(--c-lilac)); font-size: 20px; box-shadow: var(--shadow-soft); }
+      background: linear-gradient(135deg, var(--c-sky), var(--c-lilac)); font-size: 20px; box-shadow: var(--shadow-soft); overflow: hidden; }
+    .topbar .logo img { width: 100%; height: 100%; object-fit: cover; }
     .topbar .name { font-family: var(--font-head); font-weight: 600; color: var(--c-primary-ink); font-size: 15px; line-height: 1.2; }
     .topbar .name small { display: block; font-family: var(--font-body); font-weight: 400; color: var(--c-muted); font-size: 12px; }
     .topbar .back { margin-left: auto; border: 0; background: var(--c-white); color: var(--c-primary-ink);
@@ -285,7 +297,9 @@
 
   <!-- ================= TOP BAR ================= -->
   <header class="topbar">
-    <div class="logo">🙏</div>
+    <div class="logo">
+      <img src="https://i.ibb.co/jZJvt8Kt/image.png" alt="โลโก้โครงการ" />
+    </div>
     <div class="name"><span data-bind="APP_NAME"></span><small data-bind="EVENT_SHORT"></small></div>
     <button class="back" id="btnBack" type="button">← หน้าแรก</button>
   </header>
