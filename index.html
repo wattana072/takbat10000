@@ -8,7 +8,7 @@
   <meta name="theme-color" content="#A7C7E7" />
   <meta property="og:title" content="ร่วมงานตักบาตรพระหมื่นรูป กาญจนบุรี" />
   <meta property="og:description" content="19 ธ.ค. 2569 • 06.00-08.30 น. • Sky Walk กาญจนบุรี" />
-  <meta property="og:image" content="https://i.ibb.co/YFGdmS9H/image.jpg" />
+  <meta property="og:image" content="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgDn4HBcLRyb5UrVRg5zQfzdcr7PzyqDxR_PeVSpuug3LZahSn3XbX7r7STO9mc7U7kLJ5cChmYnnepBkoq3Plkk1V1M2M9EF4lKOpaleztVMtecLmt0hUdJpyvpcz_l7oG-7lf78jvn7HyHVBEq6IfrGA-4UyBDlCgsPLk9J5dGNI9S-vUkrGXigoPXqY/w290-h436/%E0%B9%82%E0%B8%9A%E0%B8%A3%E0%B9%8C%E0%B8%8A%E0%B8%B1%E0%B8%A7%E0%B8%A3%E0%B9%8C.jpg" />
   <link rel="icon" type="image/png" href="https://i.ibb.co/jZJvt8Kt/image.png" />
   <link rel="apple-touch-icon" href="https://i.ibb.co/jZJvt8Kt/image.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -536,11 +536,21 @@
     };
 
     /* ==========================================================================
-       SET 3 : รูปภาพหน้า Home (ลิงก์ตรงจาก ibb.co)
+       SET 3 : รูปภาพหน้า Home (ลิงก์รูปภาพจาก Blogger CDN)
        ========================================================================== */
     const IMAGES = [
-      { src: 'https://i.ibb.co/YFGdmS9H/image.jpg',  page: 'https://ibb.co/Pv8WKypq', alt: 'โบรชัวร์โครงการตักบาตรพระ 10,000 รูป', tag: '📰 โบรชัวร์' },
-      { src: 'https://i.ibb.co/x8M6XC4s/option.jpg', page: 'https://ibb.co/sJFqbmBP', alt: 'รายละเอียดการร่วมบุญ',               tag: '🎁 Option ร่วมบุญ' }
+      {
+        src: 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgDn4HBcLRyb5UrVRg5zQfzdcr7PzyqDxR_PeVSpuug3LZahSn3XbX7r7STO9mc7U7kLJ5cChmYnnepBkoq3Plkk1V1M2M9EF4lKOpaleztVMtecLmt0hUdJpyvpcz_l7oG-7lf78jvn7HyHVBEq6IfrGA-4UyBDlCgsPLk9J5dGNI9S-vUkrGXigoPXqY/w290-h436/%E0%B9%82%E0%B8%9A%E0%B8%A3%E0%B9%8C%E0%B8%8A%E0%B8%B1%E0%B8%A7%E0%B8%A3%E0%B9%8C.jpg',
+        page: 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgDn4HBcLRyb5UrVRg5zQfzdcr7PzyqDxR_PeVSpuug3LZahSn3XbX7r7STO9mc7U7kLJ5cChmYnnepBkoq3Plkk1V1M2M9EF4lKOpaleztVMtecLmt0hUdJpyvpcz_l7oG-7lf78jvn7HyHVBEq6IfrGA-4UyBDlCgsPLk9J5dGNI9S-vUkrGXigoPXqY/w290-h436/%E0%B9%82%E0%B8%9A%E0%B8%A3%E0%B9%8C%E0%B8%8A%E0%B8%B1%E0%B8%A7%E0%B8%A3%E0%B9%8C.jpg',
+        alt: 'โบรชัวร์โครงการตักบาตรพระ 10,000 รูป',
+        tag: '📰 โบรชัวร์'
+      },
+      {
+        src: 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjahJc3FrCygYlS-F88VgCDk8v5JB8FaW_YB36A8AeeTa3lD5KY_QTVSmCiU5FRHQf2PgWvwSzT4SZCrHrObiem_vxQgBo4Zrvasp5Gt911ZJQCuxIOK0sC07IjdmtFpUSK_F9uaDHa6S6uY9tytXuuZBgrPmCp4eEc9D8Db8f2dLkIgw0SF0tkfrbgiYU/s320/option%E0%B8%A3%E0%B9%88%E0%B8%A7%E0%B8%A1%E0%B8%9A%E0%B8%B8%E0%B8%8D.jpg',
+        page: 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjahJc3FrCygYlS-F88VgCDk8v5JB8FaW_YB36A8AeeTa3lD5KY_QTVSmCiU5FRHQf2PgWvwSzT4SZCrHrObiem_vxQgBo4Zrvasp5Gt911ZJQCuxIOK0sC07IjdmtFpUSK_F9uaDHa6S6uY9tytXuuZBgrPmCp4eEc9D8Db8f2dLkIgw0SF0tkfrbgiYU/s320/option%E0%B8%A3%E0%B9%88%E0%B8%A7%E0%B8%A1%E0%B8%9A%E0%B8%B8%E0%B8%8D.jpg',
+        alt: 'รายละเอียดการร่วมบุญ',
+        tag: '🎁 Option ร่วมบุญ'
+      }
     ];
 
     /* ==========================================================================
